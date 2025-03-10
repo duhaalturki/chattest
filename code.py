@@ -46,7 +46,7 @@ st.markdown(
     """
     <style>
     body {
-        background-color: #4CAF50; /* Green */
+        background-color: #388E3C !important; /* Darker Green */
         color: white;
     }
     .stApp {
