@@ -28,7 +28,7 @@ def get_response_from_together(messages):
             "model": "meta-llama/Llama-2-7b-chat-hf",  # ✅ Chat-focused model
             "messages": messages,
             "temperature": 0.8,
-            "max_tokens": 200
+            "max_tokens": 500
         }
         
         response = requests.post(api_url, headers=headers, json=data)
