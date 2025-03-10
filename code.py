@@ -22,7 +22,7 @@ def get_response_from_together(messages):
         data = {
             "model": "meta-llama/Llama-2-7b-chat-hf",  # ✅ Chat-focused model
             "messages": messages,
-            "temperature": 0.8,  # Allows more creativity
+            "temperature": 0.8,
             "max_tokens": 200
         }
         
@@ -36,6 +36,32 @@ def get_response_from_together(messages):
     except Exception as e:
         st.error(f"An error occurred: {e}")
         return None
+
+# Apply Green Background with CSS
+st.markdown(
+    """
+    <style>
+    body {
+        background-color: #4CAF50; /* Green */
+        color: white;
+    }
+    .stApp {
+        background-color: #4CAF50 !important; /* Green */
+    }
+    .stTextInput > div > div > input {
+        background-color: white;
+        color: black;
+    }
+    .stChatMessage {
+        background-color: rgba(255, 255, 255, 0.2) !important;
+        border-radius: 10px;
+        padding: 10px;
+        margin: 5px 0;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
 
 # Streamlit UI
 st.title("💬 Mental Health Chatbot")
@@ -67,3 +93,4 @@ if user_input:
         st.session_state.messages.append({"role": "assistant", "content": response})
         with st.chat_message("assistant"):
             st.markdown(response)
+🎨 What's New?
