@@ -1,49 +1,45 @@
 import streamlit as st
 import requests
 
-# Directly define the Mistral API key here
-mistral_api_key = "rqdW8BDnyzYFubXuNjew305C8pjUUCxH"  # Replace with your actual API key
+# Together AI API Key (Replace with your actual API key)
+TOGETHER_API_KEY = "85b9952e2ec424e60e2be7e243963eb121dd91bb33f6b9afd8a9ee1d6a114e47"
 
-# Function to get a response from Mistral API
-def get_mistral_response(prompt):
+# Function to get chatbot response
+def get_response_from_together(prompt):
     try:
-        api_url = "https://api.mistral.ai/v1/generate"  # Ensure this is the correct endpoint in Mistral API docs
-
+        api_url = "https://api.together.xyz/v1/chat/completions"
         headers = {
-            "Authorization": f"Bearer {mistral_api_key}",  # Use the key directly here
+            "Authorization": f"Bearer {TOGETHER_API_KEY}",
             "Content-Type": "application/json"
         }
         
-        # Prepare the data payload
         data = {
-            "input": prompt,  # Adjust based on the actual API parameter names
-            "max_tokens": 150  # You can adjust the max tokens as needed
+            "model": "mistral-7b-instruct",  # Free model on Together AI
+            "messages": [{"role": "user", "content": prompt}],
+            "temperature": 0.7,
+            "max_tokens": 200
         }
-
-        # Make the API request
+        
         response = requests.post(api_url, headers=headers, json=data)
-
-        # Check if the response is successful
+        
         if response.status_code == 200:
-            # Assuming the API responds with a 'choices' field; adjust based on actual API response
-            return response.json()['choices'][0]['text']
+            return response.json()["choices"][0]["message"]["content"]
         else:
-            st.error(f"Error: {response.status_code}, Message: {response.text}")  # More detailed error logging
+            st.error(f"Error: {response.status_code}, Message: {response.text}")
             return None
     except Exception as e:
         st.error(f"An error occurred: {e}")
         return None
 
 # Streamlit UI
-st.title("💬 Chatbot - Mental Health Support")
-st.write("This is a chatbot powered by Mistral API for mental health support.")
+st.title("💬 Mental Health Chatbot")
+st.write("This chatbot provides support using a **free AI model from Together AI**.")
 
-# Take user input for the chatbot prompt
-if prompt := st.text_input("Enter your message"):
-    # Call Mistral API and get the response
-    response = get_mistral_response(prompt)
+# Get user input
+user_input = st.text_input("How are you feeling today?")
+
+if user_input:
+    response = get_response_from_together(user_input)
     
-    # Display the response if it's available
     if response:
         st.write(response)
-
