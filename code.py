@@ -45,17 +45,12 @@ def get_response_from_together(messages):
 st.markdown(
     """
     <style>
-      body {
-        background-image: url('chattest/assests/green.png');
-        background-size: cover;
-        background-position: center;
+    body {
+        background-color: #4CAF50; /* Green */
         color: white;
     }
-     .stApp {
-        background-image: url('chattest/assests/green.png') !important;
-        
-        background-size: cover;
-        background-position: center;
+    .stApp {
+        background-color: #4CAF50 !important; /* Green */
     }
     .stTextInput > div > div > input {
         background-color: white;
