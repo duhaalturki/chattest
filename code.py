@@ -14,10 +14,19 @@ def get_response_from_together(prompt):
             "Content-Type": "application/json"
         }
         
+        system_prompt = (
+            "You are a kind and supportive mental health chatbot. Your goal is to provide comfort, "
+            "encouragement, and helpful advice without giving medical or crisis recommendations. "
+            "Keep the conversation warm and positive, and ask gentle follow-up questions."
+        )
+        
         data = {
-            "model": "mistralai/Mistral-7B-Instruct-v0.2",  # ✅ Updated to a valid model
-            "messages": [{"role": "user", "content": prompt}],
-            "temperature": 0.7,
+            "model": "meta-llama/Llama-2-7b-chat-hf",  # ✅ Switch to Llama-2-7B for better chat
+            "messages": [
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": prompt}
+            ],
+            "temperature": 0.8,  # Slightly more creative
             "max_tokens": 200
         }
         
