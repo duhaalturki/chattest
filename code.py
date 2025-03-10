@@ -1,13 +1,16 @@
 import streamlit as st
 import requests
 
+# Directly define the Mistral API key here
+mistral_api_key = "rqdW8BDnyzYFubXuNjew305C8pjUUCxH"  # Replace with your actual API key
+
 # Function to get response from Mistral API
 def get_mistral_response(prompt):
     try:
         api_url = "https://api.mistral.ai/v1/generate"  # Replace with actual Mistral API URL
         
         headers = {
-            "Authorization": f"Bearer {st.secrets['general']['mistral_api_key']}",  # Access the API key securely
+            "Authorization": f"Bearer {mistral_api_key}",  # Use the key directly here
             "Content-Type": "application/json"
         }
         
