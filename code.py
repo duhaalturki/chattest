@@ -50,7 +50,8 @@ st.markdown(
         color: white;
     }
      .stApp {
-        background-image: url('assets/green.png') !important;
+        background-image: url('chattest/assests/green.png') !important;
+        
         background-size: cover;
         background-position: center;
     }
