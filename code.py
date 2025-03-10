@@ -64,7 +64,7 @@ st.markdown(
 )
 
 # Streamlit UI
-st.title("💬 Mental Health Chatbot")
+st.title("💬 ZenMind - Mental Health Chatbot")
 st.write("This chatbot provides support using a **free AI model from Together AI**.")
 
 # Initialize session state for chat history
