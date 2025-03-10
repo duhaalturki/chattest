@@ -1,6 +1,5 @@
 import streamlit as st
 import requests
-import random
 
 # Together AI API Key (Replace with your actual API key)
 TOGETHER_API_KEY = "85b9952e2ec424e60e2be7e243963eb121dd91bb33f6b9afd8a9ee1d6a114e47"
@@ -42,45 +41,32 @@ def get_response_from_together(messages):
         st.error(f"An error occurred: {e}")
         return None
 
-# Apply custom CSS for background animation
+# Apply Green Background with CSS
 st.markdown(
     """
     <style>
-        @keyframes fadeInOut {
-            0% { opacity: 0; }
-            50% { opacity: 1; }
-            100% { opacity: 0; }
-        }
-        .animated-text {
-            position: fixed;
-            width: 100%;
-            text-align: center;
-            top: 10%;
-            font-size: 24px;
-            color: white;
-            font-weight: bold;
-            opacity: 0;
-            animation: fadeInOut 5s infinite;
-        }
-        body {
-            background: linear-gradient(to bottom, #008000, #004d00);
-            color: white;
-        }
+    body {
+        background-color: #4CAF50; /* Green */
+        color: white;
+    }
+    .stApp {
+        background-color: #4CAF50 !important; /* Green */
+    }
+    .stTextInput > div > div > input {
+        background-color: white;
+        color: black;
+    }
+    .stChatMessage {
+        background-color: rgba(255, 255, 255, 0.2) !important;
+        border-radius: 10px;
+        padding: 10px;
+        margin: 5px 0;
+    }
     </style>
     """,
     unsafe_allow_html=True
 )
 
-# Positive words to animate
-positive_messages = [
-    "Don't worry, it's going to be alright!",
-    "You're going to make it!",
-    "You are strong and capable!",
-    "Better days are ahead!"
-]
-
-# Display an animated positive message
-st.markdown(f'<div class="animated-text">{random.choice(positive_messages)}</div>', unsafe_allow_html=True)
 # Streamlit UI
 st.title("💬 ZenMind - Mental Health Chatbot")
 st.write("This chatbot provides support using a **free AI model from Together AI**.")
