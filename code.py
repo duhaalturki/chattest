@@ -49,8 +49,10 @@ st.markdown(
         background-color: #388E3C !important; /* Darker Green */
         color: white;
     }
-    .stApp {
-        background-color: #4CAF50 !important; /* Green */
+     .stApp {
+        background-image: url('assets/green.png') !important;
+        background-size: cover;
+        background-position: center;
     }
     .stTextInput > div > div > input {
         background-color: white;
