@@ -1,56 +1,41 @@
 import streamlit as st
 import requests
 
-# Show title and description.
+# Function to get response from Mistral API
+def get_mistral_response(prompt):
+    try:
+        # Mistral API URL (replace with the correct URL provided by Mistral)
+        api_url = "https://api.mistral.ai/v1/generate"  # Example URL, confirm with Mistral's documentation
+        
+        headers = {
+            "Authorization": f"Bearer {st.secrets['general']['mistral_api_key']}",  # Get API key from secrets.toml
+            "Content-Type": "application/json"
+        }
+        
+        data = {
+            "prompt": prompt,  # The user input that the chatbot will respond to
+            "max_tokens": 150  # Set maximum response length (optional)
+        }
+
+        # Sending POST request to Mistral API
+        response = requests.post(api_url, headers=headers, json=data)
+
+        # Check if the request was successful
+        if response.status_code == 200:
+            return response.json()['choices'][0]['text']  # Adjust this based on the actual API response format
+        else:
+            st.error(f"Error: {response.status_code}, Message: {response.json().get('error', {}).get('message', 'Unknown Error')}")
+            return None
+    except Exception as e:
+        st.error(f"An error occurred: {e}")
+        return None
+
+# Streamlit UI for chatbot
 st.title("💬 Chatbot - Mental Health Support")
-st.write(
-    "This is a simple chatbot powered by DeepSeek API, designed to provide mental health support. "
-    "The DeepSeek API key is securely stored in the backend, so you don’t need to input it manually."
-)
+st.write("This is a simple chatbot powered by Mistral API, designed to provide mental health support.")
 
-# Get the API key securely from Streamlit secrets.
-deepseek_api_key = st.secrets["general"]["deepseek_api_key"]
-
-# Create a session state variable to store the chat messages. This ensures that the
-# messages persist across reruns.
-if "messages" not in st.session_state:
-    st.session_state.messages = []
-
-# Display the existing chat messages via `st.chat_message`.
-for message in st.session_state.messages:
-    with st.chat_message(message["role"]):
-        st.markdown(message["content"])
-
-# Create a chat input field to allow the user to enter a message.
-if prompt := st.chat_input("How are you feeling today?"):
-
-    # Store and display the current prompt.
-    st.session_state.messages.append({"role": "user", "content": prompt})
-    with st.chat_message("user"):
-        st.markdown(prompt)
-
-    # Generate a response using DeepSeek API.
-    url = "https://api.deepseek.com/v1/chat/completions"  # DeepSeek endpoint
-    headers = {
-        "Authorization": f"Bearer {deepseek_api_key}",
-        "Content-Type": "application/json"
-    }
-    data = {
-        "model": "deepseek-chat",  # Specify the model, adjust this if needed
-        "messages": [{"role": "user", "content": prompt}]
-    }
-
-    # Make the request to DeepSeek's API
-    response = requests.post(url, json=data, headers=headers)
-
-    # Debugging: Check the response status and error message if any
-    if response.status_code == 200:
-        bot_response = response.json().get("choices")[0].get("message").get("content")
-    else:
-        # Print detailed error response
-        bot_response = f"Error: {response.status_code}, Message: {response.text}"
-
-    # Display the response from DeepSeek API
-    st.session_state.messages.append({"role": "assistant", "content": bot_response})
-    with st.chat_message("assistant"):
-        st.markdown(bot_response)
+# Input from user
+if prompt := st.text_input("Enter your message"):
+    response = get_mistral_response(prompt)
+    if response:
+        st.write(response)
