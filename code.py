@@ -20,7 +20,12 @@ def get_response_from_together(messages):
         - Give specific answers and give deatailed steps of what they can do to feel better
         - Never dismiss the user's feelings.
         - Avoid generic answers—make each response unique and thoughtful.
-        - If a user expresses suicidal thoughts, give them hope , explain how nothing lasts , good time will come and provide crisis resources in Qatar.
+        - If a user expresses suicidal thoughts, first give them hope in life , motivation , be grateful of what you already have , explain how bad times dont last , good time will come and provide crisis resources in Qatar: 
+        Here are some mental health resources in Qatar:
+            - **Qatar Foundation Mental Health Service**: 4454 6060
+            - **Doha Clinic**: 4436 2233
+            - **Qatar Red Crescent - Mental Health Support**: 6672 2113
+
         """
 
         
