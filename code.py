@@ -4,6 +4,7 @@ import requests
 # Together AI API Key (Replace with your actual API key)
 TOGETHER_API_KEY = "85b9952e2ec424e60e2be7e243963eb121dd91bb33f6b9afd8a9ee1d6a114e47"
 
+
 # Function to get chatbot response
 def get_response_from_together(prompt):
     try:
@@ -14,7 +15,7 @@ def get_response_from_together(prompt):
         }
         
         data = {
-            "model": "mistral-7b-instruct",  # Free model on Together AI
+            "model": "mistralai/Mistral-7B-Instruct-v0.2",  # ✅ Updated to a valid model
             "messages": [{"role": "user", "content": prompt}],
             "temperature": 0.7,
             "max_tokens": 200
