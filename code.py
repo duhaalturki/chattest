@@ -20,7 +20,7 @@ def get_response_from_together(messages):
         - Give specific answers and give deatailed steps of what they can do to feel better
         - Never dismiss the user's feelings.
         - Avoid generic answers—make each response unique and thoughtful.
-        - If a user expresses suicidal thoughts, provide crisis resources instead of general reassurance in Qatar.
+        - If a user expresses suicidal thoughts, give them hope , explain how nothing lasts , good time will come and provide crisis resources in Qatar.
         """
 
         
