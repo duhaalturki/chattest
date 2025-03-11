@@ -1,5 +1,6 @@
 import streamlit as st
 import requests
+import base64
 
 # Together AI API Key (Replace with your actual API key)
 TOGETHER_API_KEY = "85b9952e2ec424e60e2be7e243963eb121dd91bb33f6b9afd8a9ee1d6a114e47"
@@ -19,15 +20,20 @@ def get_response_from_together(messages):
         - Always respond in a warm and caring way.
         - Never dismiss the user's feelings.
         - Avoid generic answers—make each response unique and thoughtful.
-        - If a user expresses suicidal thoughts, provide crisis resources instead of general reassurance.
+        - If a user expresses suicidal thoughts, provide crisis resources in Qatar.
+        
+        Hotline Numbers in Qatar:
+        - Mental Health Helpline: 16000 (Available 24/7)
+        - Hamad Medical Corporation: +974 4439 5777
+        - Qatar Foundation for Mental Health: +974 4454 9000
+        - Police / Emergency: 999
         """
 
-        
         data = {
-            "model": "meta-llama/Llama-2-7b-chat-hf",  # ✅ Chat-focused model
+            "model": "mistralai/Mistral-7B-Instruct-v0.1",  # ✅ Updated working model
             "messages": messages,
-            "temperature": 0.8,
-            "max_tokens": 200
+            "temperature": 0.7,
+            "max_tokens": 500
         }
         
         response = requests.post(api_url, headers=headers, json=data)
@@ -41,16 +47,33 @@ def get_response_from_together(messages):
         st.error(f"An error occurred: {e}")
         return None
 
-# Apply Green Background with CSS
+# Function to encode image as base64
+def set_background(uploaded_file):
+    if uploaded_file is not None:
+        encoded_image = base64.b64encode(uploaded_file.getvalue()).decode()
+        st.markdown(
+            f"""
+            <style>
+            .stApp {{
+                background-image: url("data:image/png;base64,{encoded_image}");
+                background-size: cover;
+            }}
+            </style>
+            """,
+            unsafe_allow_html=True
+        )
+
+# Upload background image
+uploaded_file = st.file_uploader("Upload a background image (PNG)", type=["png"])
+if uploaded_file:
+    set_background(uploaded_file)
+
+# Apply Green Background with CSS (fallback)
 st.markdown(
     """
     <style>
-    body {
-        background-color: #4CAF50; /* Green */
-        color: white;
-    }
     .stApp {
-        background-color: #4CAF50 !important; /* Green */
+        background-color: #388E3C !important; /* Darker Green */
     }
     .stTextInput > div > div > input {
         background-color: white;
@@ -69,7 +92,7 @@ st.markdown(
 
 # Streamlit UI
 st.title("💬 ZenMind - Mental Health Chatbot")
-st.write("This chatbot provides support using a **free AI model from Together AI**.")
+st.write("This chatbot provides **hope and motivation** while offering mental health support in **Qatar**.")
 
 # Initialize session state for chat history
 if "messages" not in st.session_state:
