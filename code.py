@@ -1,6 +1,5 @@
 import streamlit as st
 import requests
-import base64
 
 # Together AI API Key (Replace with your actual API key)
 TOGETHER_API_KEY = "85b9952e2ec424e60e2be7e243963eb121dd91bb33f6b9afd8a9ee1d6a114e47"
@@ -47,28 +46,7 @@ def get_response_from_together(messages):
         st.error(f"An error occurred: {e}")
         return None
 
-# Function to encode image as base64
-def set_background(uploaded_file):
-    if uploaded_file is not None:
-        encoded_image = base64.b64encode(uploaded_file.getvalue()).decode()
-        st.markdown(
-            f"""
-            <style>
-            .stApp {{
-                background-image: url("data:image/png;base64,{encoded_image}");
-                background-size: cover;
-            }}
-            </style>
-            """,
-            unsafe_allow_html=True
-        )
-
-# Upload background image
-uploaded_file = st.file_uploader("Upload a background image (PNG)", type=["png"])
-if uploaded_file:
-    set_background(uploaded_file)
-
-# Apply Green Background with CSS (fallback)
+# Apply Darker Green Background with CSS
 st.markdown(
     """
     <style>
