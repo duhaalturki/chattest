@@ -19,8 +19,7 @@ def get_response_from_together(messages):
         - Always respond in a warm and caring way.
         - Never dismiss the user's feelings.
         - Avoid generic answers—make each response unique and thoughtful.
-        - If a user expresses suicidal thoughts, provide crisis resources in Qatar.
-        Answer: 💙 I'm really sorry you're feeling this way. I want you to know that you're not alone, and what you're going through matters.
+        - If a user expresses suicidal thoughts, provide crisis resources in Qatar, answer: 💙 I'm really sorry you're feeling this way. I want you to know that you're not alone, and what you're going through matters.
 
         💡 Please reach out for immediate support. You deserve help and kindness. In Qatar, you can contact:
         📞 Mental Health Helpline: 16000 (Available 24/7)
