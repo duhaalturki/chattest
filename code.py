@@ -73,44 +73,35 @@ st.markdown(
 st.title("💬 ZenMind - Mental Health Chatbot")
 st.write("This chatbot provides **hope and motivation** while offering mental health support in **Qatar**.")
 
-# Initialize session state for chat history
+# Ensure the system prompt is added only once, but never displayed
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
-# System prompt for chatbot behavior
-system_prompt = {
-    "role": "system",
-    "content": """
-    🚨 IMPORTANT: If a user expresses suicidal thoughts, ALWAYS respond with this message:
-
-    💙 I'm really sorry you're feeling this way. I want you to know that you're not alone, and what you're going through matters.
-    💡 Please reach out for immediate support. You deserve help and kindness. In Qatar, you can contact:
-    📞 Mental Health Helpline: 16000 (Available 24/7)
-    📞 Hamad Medical Corporation: +974 4439 5777
-    📞 Emergency Services: 999
-
-    ---
-
-    You are a supportive and empathetic mental health assistant. Your job is to comfort users, validate their feelings, and gently encourage them to seek professional help when necessary.
-
-    - Be warm and engaging – the chatbot should feel like a friendly and caring presence.
-    - Acknowledge the user’s presence positively – a simple “Hi! It’s nice to hear from you 😊” feels more welcoming.
-    - Offer support right away – instead of asking a broad, impersonal question.
-    - Always respond in a warm and caring way.
-    - Never dismiss the user's feelings.
-    - Avoid generic answers—make each response unique and thoughtful.
-    """
-}
-
-# Ensure the system prompt is added only once
 if len(st.session_state.messages) == 0:
-    st.session_state.messages.append(system_prompt)
+    st.session_state.system_prompt = {
+        "role": "system",
+        "content": """
+        🚨 IMPORTANT: If a user expresses suicidal thoughts, ALWAYS respond with this message:
 
-# Display past messages
-for msg in st.session_state.messages:
-    if msg["role"] != "system":
-        with st.chat_message(msg["role"]):
-            st.markdown(msg["content"])
+        💙 I'm really sorry you're feeling this way. I want you to know that you're not alone, and what you're going through matters.
+        💡 Please reach out for immediate support. You deserve help and kindness. In Qatar, you can contact:
+        📞 Mental Health Helpline: 16000 (Available 24/7)
+        📞 Hamad Medical Corporation: +974 4439 5777
+        📞 Emergency Services: 999
+
+        ---
+
+        You are a supportive and empathetic mental health assistant. Your job is to comfort users, validate their feelings, and gently encourage them to seek professional help when necessary.
+
+        - Be warm and engaging – the chatbot should feel like a friendly and caring presence.
+        - Acknowledge the user’s presence positively – a simple “Hi! It’s nice to hear from you 😊” feels more welcoming.
+        - Offer support right away – instead of asking a broad, impersonal question.
+        - Always respond in a warm and caring way.
+        - Never dismiss the user's feelings.
+        - Avoid generic answers—make each response unique and thoughtful.
+        """
+    }
+    st.session_state.messages.append({"role": "assistant", "content": "Hi! It's nice to hear from you 😊. How can I assist you today?"})  # ✅ This is the first chatbot message.
 
 # Get user input
 user_input = st.chat_input("Type your message here...")
