@@ -1,8 +1,9 @@
 import streamlit as st
 import requests
+import os
 
-# Together AI API Key (Replace with your actual API key)
-TOGETHER_API_KEY = "85b9952e2ec424e60e2be7e243963eb121dd91bb33f6b9afd8a9ee1d6a114e47"
+# Together AI API Key (Use environment variable or Streamlit secrets)
+TOGETHER_API_KEY = os.getenv("TOGETHER_API_KEY", "85b9952e2ec424e60e2be7e243963eb121dd91bb33f6b9afd8a9ee1d6a114e47")
 
 # Function to detect suicidal thoughts
 def contains_suicidal_thoughts(user_message):
@@ -53,12 +54,6 @@ st.markdown(
     <style>
     .stApp {
         background-color: #388E3C !important;
-    }
-    .stChatMessage {
-        background-color: rgba(255, 255, 255, 0.2) !important;
-        border-radius: 10px;
-        padding: 10px;
-        margin: 5px 0;
     }
     .stTextInput > div > div > input {
         background-color: white;
@@ -138,11 +133,11 @@ if user_input:
         """
 
     else:
-        # Get AI-generated response for normal conversation
-        response = get_response_from_together(st.session_state.messages)
+        # Include the system prompt in the messages sent to the API
+        messages_for_api = [st.session_state.system_prompt] + st.session_state.messages
+        response = get_response_from_together(messages_for_api)
 
     if response:
         st.session_state.messages.append({"role": "assistant", "content": response})
         with st.chat_message("assistant"):
             st.markdown(response)
-
