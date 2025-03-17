@@ -3,6 +3,10 @@ import requests
 
 # Together AI API Key (Replace with your actual API key)
 TOGETHER_API_KEY = "85b9952e2ec424e60e2be7e243963eb121dd91bb33f6b9afd8a9ee1d6a114e47"
+# Function to detect suicidal thoughts
+def contains_suicidal_thoughts(user_message):
+    keywords = ["suicide", "kill myself", "end my life", "no reason to live", "can't go on", "give up"]
+    return any(keyword in user_message.lower() for keyword in keywords)
 
 # Function to get chatbot response
 def get_response_from_together(messages):
@@ -13,32 +17,10 @@ def get_response_from_together(messages):
             "Content-Type": "application/json"
         }
         
-        system_prompt = """
-        You are a supportive and empathetic mental health assistant. Your job is to comfort users, validate their feelings, and gently encourage them to seek professional help when necessary.
-
-        - Be warm and engaging – the chatbot should feel like a friendly and caring presence.
-        - Acknowledge the user’s presence positively – a simple “Hi! It’s nice to hear from you 😊” feels more welcoming.
-        - Offer support right away – instead of asking a broad, impersonal question.
-        - Always respond in a warm and caring way.
-        - Never dismiss the user's feelings.
-        - Avoid generic answers—make each response unique and thoughtful.
-        - If a user expresses suicidal thoughts, provide crisis resources in Qatar:
-
-        💙 I'm really sorry you're feeling this way. I want you to know that you're not alone, and what you're going through matters.
-        💡 Please reach out for immediate support. You deserve help and kindness. In Qatar, you can contact:
-        📞 Mental Health Helpline: 16000 (Available 24/7)
-        📞 Hamad Medical Corporation: +974 4439 5777
-        📞 Emergency Services: 999
-        """
-
-        # Ensure the system prompt is included in messages
-        if not any(msg["role"] == "system" for msg in messages):
-            messages.insert(0, {"role": "system", "content": system_prompt})
-
         data = {
-            "model": "mistralai/Mistral-7B-Instruct-v0.1",  # ✅ Updated working model
+            "model": "mistralai/Mistral-7B-Instruct-v0.1",
             "messages": messages,
-            "temperature": 0.7,
+            "temperature": 0.3,  # Lower randomness
             "max_tokens": 500
         }
         
@@ -58,11 +40,7 @@ st.markdown(
     """
     <style>
     .stApp {
-        background-color: #388E3C !important; /* Darker Green */
-    }
-    .stTextInput > div > div > input {
-        background-color: white;
-        color: black;
+        background-color: #388E3C !important;
     }
     .stChatMessage {
         background-color: rgba(255, 255, 255, 0.2) !important;
@@ -81,7 +59,35 @@ st.write("This chatbot provides **hope and motivation** while offering mental he
 
 # Initialize session state for chat history
 if "messages" not in st.session_state:
-    st.session_state.messages = [{"role": "system", "content": "Hello! How are you feeling today?"}]
+    st.session_state.messages = []
+
+system_prompt = {
+    "role": "system",
+    "content": """
+    🚨 IMPORTANT: If a user expresses suicidal thoughts, ALWAYS respond with this message:
+
+    💙 I'm really sorry you're feeling this way. I want you to know that you're not alone, and what you're going through matters.
+    💡 Please reach out for immediate support. You deserve help and kindness. In Qatar, you can contact:
+    📞 Mental Health Helpline: 16000 (Available 24/7)
+    📞 Hamad Medical Corporation: +974 4439 5777
+    📞 Emergency Services: 999
+
+    ---
+
+    You are a supportive and empathetic mental health assistant. Your job is to comfort users, validate their feelings, and gently encourage them to seek professional help when necessary.
+
+    - Be warm and engaging – the chatbot should feel like a friendly and caring presence.
+    - Acknowledge the user’s presence positively – a simple “Hi! It’s nice to hear from you 😊” feels more welcoming.
+    - Offer support right away – instead of asking a broad, impersonal question.
+    - Always respond in a warm and caring way.
+    - Never dismiss the user's feelings.
+    - Avoid generic answers—make each response unique and thoughtful.
+    """
+}
+
+# Ensure the system prompt is added only once
+if len(st.session_state.messages) == 0:
+    st.session_state.messages.append(system_prompt)
 
 # Display past messages
 for msg in st.session_state.messages:
@@ -93,14 +99,16 @@ for msg in st.session_state.messages:
 user_input = st.chat_input("Type your message here...")
 
 if user_input:
-    # Display user message
     st.session_state.messages.append({"role": "user", "content": user_input})
     with st.chat_message("user"):
         st.markdown(user_input)
-    
-    # Get AI response
-    response = get_response_from_together(st.session_state.messages)
-    
+
+    # Detect suicidal thoughts
+    if contains_suicidal_thoughts(user_input):
+        response = system_prompt["content"].split("🚨 IMPORTANT:")[1]  # Extract hotline message
+    else:
+        response = get_response_from_together(st.session_state.messages)
+
     if response:
         st.session_state.messages.append({"role": "assistant", "content": response})
         with st.chat_message("assistant"):
