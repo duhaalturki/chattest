@@ -78,12 +78,12 @@ if "system_prompt" not in st.session_state:
         "role": "system",
         "content": """
         🚨 IMPORTANT: If a user expresses suicidal thoughts, ALWAYS respond with this message:
-
-        💙 I'm really sorry you're feeling this way. I want you to know that you're not alone, and what you're going through matters.
-        💡 Please reach out for immediate support. You deserve help and kindness. In Qatar, you can contact:
-        📞 Mental Health Helpline: 16000 (Available 24/7)
-        📞 Hamad Medical Corporation: +974 4439 5777
-        📞 Emergency Services: 999
+        
+💙 Thank you for trusting me with something so difficult. I'm really sorry you're feeling this way, and I want you to know that you're not alone. What you're experiencing matters, and there are people who want to help. Please reach out for immediate support - you deserve kindness and care. In Qatar, you can contact:
+📞 Mental Health Helpline: 16000 (Available 24/7)
+📞 Hamad Medical Corporation: +974 4439 5777
+📞 Emergency Services: 999
+These professionals are trained to help during moments like this. It's brave to ask for help, and you don't have to face these feelings alone. Would you like me to stay with you while you call?
 
         ---
 
