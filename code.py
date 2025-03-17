@@ -68,11 +68,12 @@ st.markdown(
 st.title("💬 ZenMind - Mental Health Chatbot")
 st.write("This chatbot provides **hope and motivation** while offering mental health support in **Qatar**.")
 
-# Ensure the system prompt is added only once, but never displayed
+# Initialize session state for chat history
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
-if len(st.session_state.messages) == 0:
+# Add system prompt only once
+if "system_prompt" not in st.session_state:
     st.session_state.system_prompt = {
         "role": "system",
         "content": """
@@ -96,12 +97,17 @@ if len(st.session_state.messages) == 0:
         - Avoid generic answers—make each response unique and thoughtful.
         """
     }
-    st.session_state.messages.append({"role": "assistant", "content": "Hi! It's nice to hear from you 😊. How can I assist you today?"})  # ✅ This is the first chatbot message.
+
+# Display chat history
+for message in st.session_state.messages:
+    with st.chat_message(message["role"]):
+        st.markdown(message["content"])
 
 # Get user input
 user_input = st.chat_input("Type your message here...")
 
 if user_input:
+    # Add user message to chat history
     st.session_state.messages.append({"role": "user", "content": user_input})
     with st.chat_message("user"):
         st.markdown(user_input)
@@ -138,6 +144,7 @@ if user_input:
         response = get_response_from_together(messages_for_api)
 
     if response:
+        # Add assistant response to chat history
         st.session_state.messages.append({"role": "assistant", "content": response})
         with st.chat_message("assistant"):
             st.markdown(response)
