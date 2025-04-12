@@ -53,7 +53,7 @@ st.markdown(
     """
     <style>
     .stApp {
-        background-color: #388E3C !important;
+        background-color: #154c79 !important;
     }
     .stTextInput > div > div > input {
         background-color: white;
