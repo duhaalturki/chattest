@@ -1,6 +1,7 @@
 import streamlit as st
 import requests
 import os
+import re
 
 # Together AI API Key (Use environment variable or Streamlit secrets)
 TOGETHER_API_KEY = os.getenv("TOGETHER_API_KEY", "85b9952e2ec424e60e2be7e243963eb121dd91bb33f6b9afd8a9ee1d6a114e47")
@@ -9,7 +10,7 @@ TOGETHER_API_KEY = os.getenv("TOGETHER_API_KEY", "85b9952e2ec424e60e2be7e243963e
 def contains_suicidal_thoughts(user_message):
     keywords = [
         "suicide", "kill myself", "end my life", "i wanna die", "no reason to live",
-        "give up", "can't go on", "hurt myself", "self harm", "nothing matters"
+        "give up", "can't go on", "hurt myself", "self harm", "nothing matters","don't want to live anymore","kill someone"
     ]
     return any(keyword in user_message.lower() for keyword in keywords)
 
@@ -21,6 +22,7 @@ def contains_loneliness_keywords(user_message):
     ]
     return any(keyword in user_message.lower() for keyword in loneliness_keywords)
 
+
 # Function to get chatbot response from Together AI
 def get_response_from_together(messages):
     try:
@@ -30,17 +32,26 @@ def get_response_from_together(messages):
             "Content-Type": "application/json"
         }
 
+        # Add a specific instruction as the last system message
+        final_messages = messages.copy()
+        final_messages.append({
+            "role": "system",
+            "content": "IMPORTANT: Do not include any thinking tags or show your reasoning. Respond directly to the user."
+        })
+
         data = {
-            "model": "mistralai/Mistral-7B-Instruct-v0.1",
-            "messages": messages,
-            "temperature": 0.3,  # Lower randomness for better adherence to system prompt
-            "max_tokens": 500
+            "model": "deepseek-ai/DeepSeek-R1-Distill-Llama-70B-free",
+            "messages": final_messages,
+            "temperature": 0.3,
+            "max_tokens": 1000
         }
 
         response = requests.post(api_url, headers=headers, json=data)
 
         if response.status_code == 200:
-            return response.json()["choices"][0]["message"]["content"]
+            raw_response = response.json()["choices"][0]["message"]["content"]
+            # Clean the response here, inside the function
+            return clean_thinking_tags(raw_response)
         else:
             st.error(f"Error: {response.status_code}, Message: {response.text}")
             return None
@@ -48,7 +59,30 @@ def get_response_from_together(messages):
         st.error(f"An error occurred: {e}")
         return None
 
-# Apply Darker Green Background with CSS for better UI
+# More comprehensive cleaning function
+def clean_thinking_tags(text):
+    if not text:
+        return text
+        
+    # Try multiple patterns to catch different variations
+    patterns = [
+        r'<think>.*?</think>',  # Standard tags
+        r'<think>.*',           # Opening tag without closing
+        r'\[thinking\].*?\[/thinking\]',  # Alternative format
+        r'<thinking>.*?</thinking>',      # Another variation
+        r'.*?thinking:.*?\n',             # Text format
+        r'\*thinking\*.*?\*',             # Asterisk format
+    ]
+    
+    cleaned_text = text
+    for pattern in patterns:
+        cleaned_text = re.sub(pattern, '', cleaned_text, flags=re.DOTALL | re.IGNORECASE)
+    
+    # Remove any extra whitespace and newlines that might be left
+    cleaned_text = re.sub(r'\n\s*\n', '\n\n', cleaned_text)
+    return cleaned_text.strip()
+
+#BG Colour (blue)
 st.markdown(
     """
     <style>
@@ -77,8 +111,10 @@ if "system_prompt" not in st.session_state:
     st.session_state.system_prompt = {
         "role": "system",
         "content": """
-        🚨 IMPORTANT: If a user expresses suicidal thoughts, ALWAYS respond with this message:
         
+        🚨 IMPORTANT: DO NOT include any <think> tags or thinking process in your responses. Respond directly to the user without showing your reasoning.
+        🚨 IMPORTANT: If a user expresses suicidal thoughts, ALWAYS respond with this message:
+
 💙 Thank you for trusting me with something so difficult. I'm really sorry you're feeling this way, and I want you to know that you're not alone. What you're experiencing matters, and there are people who want to help. Please reach out for immediate support - you deserve kindness and care. In Qatar, you can contact:
 📞 Mental Health Helpline: 16000 (Available 24/7)
 📞 Hamad Medical Corporation: +974 4439 5777
@@ -94,8 +130,9 @@ These professionals are trained to help during moments like this. It's brave to 
         - Offer support right away – instead of asking a broad, impersonal question.
         - Always respond in a warm and caring way.
         - Never dismiss the user's feelings.
-        - Avoid generic answers—make each response unique and thoughtful.
-        - Never tell the user that you were programmed to respond this way, you must act human-like and respond with empathy.
+        - Avoid generic answers, make each response unique and thoughtful.
+        - Refrain from telling the user your thought process, you are supposed to act like a human therapist.
+        - Never tell the user that you were programmed to act like this. Always respond in a humanly, empathetic manner.
         """
     }
 
